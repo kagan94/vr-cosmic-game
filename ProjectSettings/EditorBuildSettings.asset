@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/SpacewalkVR_leo.unity
+    guid: 63e4f36d59a3dc74c945141cd2f843c2
   - enabled: 1
     path: Assets/Scenes/SpacewalkVR_maolin.unity
     guid: 9c2cbbc6810554c128db4beecd00fb1f
   - enabled: 0
-    path: Assets/Scenes/SpacewalkVR_leo.unity
-    guid: 63e4f36d59a3dc74c945141cd2f843c2
+    path: Assets/Scenes/TestScene.unity
+    guid: a6660bb7acde6490a8810a0b8094335a
