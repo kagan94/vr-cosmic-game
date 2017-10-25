@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: PuffySmoke
+  m_Shader: {fileID: 4800000, guid: 98640db0e2a9236429b24941c8ad0807, type: 3}
+  m_ShaderKeywords: CLOUDS_OFF END_DETAILS_ON EXTRA_LIGHTS_ON START_DETAILS_ON VERTEXLIGHT_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DetailTex:
+        m_Texture: {fileID: 2800000, guid: 460a39ae632edeb47b9dc481aef58f79, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailTex2:
+        m_Texture: {fileID: 2800000, guid: 32cf1bfee0f51384bbe13ddc4c8b8337, type: 3}
+        m_Scale: {x: 0.5, y: 0.5}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 790a1477062ad0d4ebefd7315b75d5ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _CloudMode: 0
+    - _Density: 0.173
+    - _DetailsFading: 1
+    - _DetailsFadingLimit: 2
+    - _DetailsHSpeed: 0.01
+    - _DetailsHSpeed2: 0
+    - _DetailsSpeed: 0
+    - _DetailsSpeedSmall: 0
+    - _DetailsVSpeed: -0.05
+    - _DetailsVSpeed2: 0.13
+    - _ElapsedTime: 1
+    - _EmissiveDensity: 1
+    - _ExtraLightsIntensity: 1
+    - _FadeIn: 0
+    - _Opacity: 0.471
+    - _Scattering: 0
+    - _Sharpness: 0
+    - _SharpnessSmall: 10
+    - _TScale: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}

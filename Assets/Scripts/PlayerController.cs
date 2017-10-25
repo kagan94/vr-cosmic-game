@@ -7,47 +7,37 @@ public class PlayerController : MonoBehaviour {
 
 	private float speed = 0;
 	private float minSpeed = 0;
-	private float maxSpeed = 10f;
-	private float acceleration = 0.25f;
+	private float maxSpeed = 100f;
+	private float acceleration = 0.5f;
 	private float deceleration = 0.1f;
-	private Rigidbody rbody;
+	private Rigidbody rb;
 	private Quaternion lastTouchPadOrientation;
 
 	void Start() {
-		rbody = GetComponent<Rigidbody>();
+		rb = GetComponent<Rigidbody>();
 	}
 
 	// Update is called once per frame
-	void Update () {
-		// Move only forward
-//		Vector3 targetMoveVector = ori * (Vector3.forward * Time.deltaTime * 1.5f);
-		
-		// Move in opposite direction
-		// Vector3 targetMoveVector = ori * - (Vector3.forward * Time.deltaTime * 1.5f);
-
+	void Update() {
 		if (GvrControllerInput.AppButton) {
 			DeadScreen.SetActive(false);
 		}
-		
-		// rbody.velocity = movement * speed;
-		if (GvrControllerInput.ClickButton) { // Speed up by clicking on TouchPad
-			lastTouchPadOrientation = GvrControllerInput.Orientation;
-			speed = Mathf.Min(speed + acceleration, maxSpeed);
-		} else if (speed > minSpeed) { // Slow down (TouchPad was released
-			speed = Mathf.Max(speed - deceleration, minSpeed);
+	}
+
+	private void FixedUpdate() {
+		// Speed up by clicking on TouchPad
+		if (GvrControllerInput.ClickButton) {
+			speed += acceleration;
+			Vector3 targetPos = GvrControllerInput.Orientation * Vector3.forward;
+			Vector3 direction = targetPos;
+			rb.AddRelativeForce(direction.normalized * speed, ForceMode.Force);
+		} else {
+			speed = 0;
 		}
-		
-		if (speed > 0) {
-			Vector3 targetMoveVector = lastTouchPadOrientation * (Vector3.forward * Time.deltaTime * (1 + speed));
-			targetMoveVector.y = 0;
-			transform.position += targetMoveVector;			
-		}
-//		rbody.position += targetMoveVector;
 	}
 
 	private void OnCollisionEnter(Collision other) {
 		if (other.gameObject.CompareTag("Asteroid")) {
-			// Destroy(gameObject);
 			DeadScreen.SetActive(true);
 		}
 	}
