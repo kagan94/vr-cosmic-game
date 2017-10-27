@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-	public GameObject DeadScreen;
+	public GameObject deadScreen;
 
 	private float speed = 0;
-	private float minSpeed = 0;
-	private float maxSpeed = 100f;
+	private float maxSpeed = 150f;
 	private float acceleration = 0.5f;
-	private float deceleration = 0.1f;
 	private Rigidbody rb;
-	private Quaternion lastTouchPadOrientation;
+	private Vector3 initialPosition;
+	private Quaternion initialRotation;
 
 	void Start() {
 		rb = GetComponent<Rigidbody>();
+		initialPosition = transform.position;
+		initialRotation = transform.rotation;
 	}
 
 	// Update is called once per frame
 	void Update() {
+		// Reset the Player position
 		if (GvrControllerInput.AppButton) {
-			DeadScreen.SetActive(false);
+			deadScreen.SetActive(false);
+			transform.position = initialPosition;
+			rb.velocity = Vector3.zero;
+            
+			float rotationResetSpeed = 50f * Time.deltaTime;
+			transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
 		}
 	}
 
@@ -38,7 +45,7 @@ public class PlayerController : MonoBehaviour {
 
 	private void OnCollisionEnter(Collision other) {
 		if (other.gameObject.CompareTag("Asteroid")) {
-			DeadScreen.SetActive(true);
+			deadScreen.SetActive(true);
 		}
 	}
 }
