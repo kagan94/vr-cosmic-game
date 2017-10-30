@@ -11,11 +11,13 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody rb;
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
+	private Quaternion initialCameraRotation;
 
 	void Start() {
 		rb = GetComponent<Rigidbody>();
 		initialPosition = transform.position;
 		initialRotation = transform.rotation;
+		initialCameraRotation = Camera.main.transform.rotation;
 	}
 
 	// Update is called once per frame
@@ -27,7 +29,9 @@ public class PlayerController : MonoBehaviour {
 			rb.velocity = Vector3.zero;
             
 			float rotationResetSpeed = 50f * Time.deltaTime;
-			transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
+			 transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
+			// transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
+			// Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, initialCameraRotation, rotationResetSpeed);
 		}
 	}
 
