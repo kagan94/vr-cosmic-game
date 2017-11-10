@@ -16,15 +16,18 @@ public class PlayerController : MonoBehaviour {
 	public float oxygenVolumn = 100;
 	
 	private GameManager gameManager;
-	private float speed = 0;
-	private float maxSpeed = 150f;
-	private float acceleration = 0.5f;
 	private Rigidbody rb;
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 	private Quaternion initialCameraRotation;
+	private float speed = 0;
+	private float maxSpeed = 150f;
+	private float acceleration = 0.5f;
 	private float oxygenConsumingSpeedByAirInjection = 2f;
 	private float oxygenConsumingSpeedByBreath = 0.002f;
+	private float timestampOfAppBtnDown = 0.0f;
+	private float timestampOfClickBtnDown = 0.0f;
+	private float timeElapsed = 0f;
 
 	void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -61,11 +64,10 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private float timeElapsed = 0f;
 	private void showAlarmScreen(GameObject alarmScreenObject, float interval) {
 		timeElapsed += Time.deltaTime;
 		if(timeElapsed > interval) {
-			if(alarmScreenObject.activeSelf== true) {
+			if(alarmScreenObject.activeSelf) {
 				alarmScreenObject.SetActive (false);
 			} else {
 				alarmScreenObject.SetActive (true);
@@ -74,7 +76,6 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private float timestampOfAppBtnDown = 0.0f;
 	private bool isAppBtnLongPressed(float lastingInSeconds) {
 		if (GvrControllerInput.AppButtonDown) {
 			timestampOfAppBtnDown = Time.time;			
@@ -86,10 +87,8 @@ public class PlayerController : MonoBehaviour {
 		return false;
 	}
 
-	private float timestampOfClickBtnDown = 0.0f;
 	private void FixedUpdate() {
-		if (gameManager.currentState == GameManager.GameState.PlayingState) {
-			
+		if (gameManager.IsPlayingState()) {
 			// Speed up by clicking on TouchPad
 			if (GvrControllerInput.ClickButton) {
 				speed += acceleration;
