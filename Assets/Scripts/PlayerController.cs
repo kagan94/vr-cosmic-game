@@ -8,24 +8,26 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 	
 //	public GameObject deadScreen;
-	private GameManager gameManager;
 	public Transform destination;
 	public Transform departure;
 	public GameObject oxygenValue;
 	public GameObject oxygenAlarmScreen;
 	public GameObject fireAlarmScreen;
-
-	private float speed = 0;
-	private float maxSpeed = 150f;
-	private float acceleration = 0.5f;
+	public float oxygenVolumn = 100;
+	
+	private GameManager gameManager;
 	private Rigidbody rb;
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 	private Quaternion initialCameraRotation;
-
-	public float oxygenVolumn = 100;
+	private float speed = 0;
+	private float maxSpeed = 150f;
+	private float acceleration = 0.5f;
 	private float oxygenConsumingSpeedByAirInjection = 2f;
 	private float oxygenConsumingSpeedByBreath = 0.002f;
+	private float timestampOfAppBtnDown = 0.0f;
+	private float timestampOfClickBtnDown = 0.0f;
+	private float timeElapsed = 0f;
 
 	void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -62,11 +64,10 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private float timeElapsed = 0f;
 	private void showAlarmScreen(GameObject alarmScreenObject, float interval) {
 		timeElapsed += Time.deltaTime;
 		if(timeElapsed > interval) {
-			if(alarmScreenObject.activeSelf== true) {
+			if(alarmScreenObject.activeSelf) {
 				alarmScreenObject.SetActive (false);
 			} else {
 				alarmScreenObject.SetActive (true);
@@ -75,21 +76,19 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private float timestampOfAppBtnDown = 0.0f;
 	private bool isAppBtnLongPressed(float lastingInSeconds) {
-		if (GvrControllerInput.AppButtonDown)
-			timestampOfAppBtnDown = Time.time;
+		if (GvrControllerInput.AppButtonDown) {
+			timestampOfAppBtnDown = Time.time;			
+		}
 		if (GvrControllerInput.AppButtonUp) {
 			float timePassed = Time.time - timestampOfAppBtnDown;
-			return (timePassed >= lastingInSeconds) ? true : false;
+			return timePassed >= lastingInSeconds;
 		}
 		return false;
 	}
 
-	private float timestampOfClickBtnDown = 0.0f;
 	private void FixedUpdate() {
-		if (gameManager.currentState == GameManager.GameState.PlayingState) {
-			
+		if (gameManager.IsPlayingState()) {
 			// Speed up by clicking on TouchPad
 			if (GvrControllerInput.ClickButton) {
 				speed += acceleration;
@@ -118,7 +117,7 @@ public class PlayerController : MonoBehaviour {
 //		}
 		gameManager.SwitchToFailureState();
 	}
-		
+
 	public float GetDistance() {
 		return Vector3.Distance (transform.position, destination.position);
 	}
