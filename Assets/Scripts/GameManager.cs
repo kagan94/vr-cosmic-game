@@ -80,8 +80,7 @@ public class GameManager : MonoBehaviour {
 			}
 			break;
 		}
-
-		Debug.Log ("Current state: " + currentState);
+		// Debug.Log ("Current state: " + currentState);
 	}
 		
 	private void SetState(GameState state) {
@@ -113,4 +112,9 @@ public class GameManager : MonoBehaviour {
 	private float GetStateElapsed() {
 		return Time.time - lastStateChange;
 	}
+
+	public bool IsInitState() { return currentState == GameState.InitState; }
+	public bool IsPlayingState() { return currentState == GameState.PlayingState; }
+	public bool IsFailureState() { return currentState == GameState.FailureState; }
+	public bool IsSuccessState() { return currentState == GameState.SuccessState; }
 }

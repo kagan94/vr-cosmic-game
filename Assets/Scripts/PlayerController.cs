@@ -8,13 +8,14 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 	
 //	public GameObject deadScreen;
-	private GameManager gameManager;
 	public Transform destination;
 	public Transform departure;
 	public GameObject oxygenValue;
 	public GameObject oxygenAlarmScreen;
 	public GameObject fireAlarmScreen;
-
+	public float oxygenVolumn = 100;
+	
+	private GameManager gameManager;
 	private float speed = 0;
 	private float maxSpeed = 150f;
 	private float acceleration = 0.5f;
@@ -22,8 +23,6 @@ public class PlayerController : MonoBehaviour {
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 	private Quaternion initialCameraRotation;
-
-	public float oxygenVolumn = 100;
 	private float oxygenConsumingSpeedByAirInjection = 2f;
 	private float oxygenConsumingSpeedByBreath = 0.002f;
 
@@ -76,11 +75,12 @@ public class PlayerController : MonoBehaviour {
 
 	private float timestampOfAppBtnDown = 0.0f;
 	private bool isAppBtnLongPressed(float lastingInSeconds) {
-		if (GvrControllerInput.AppButtonDown)
-			timestampOfAppBtnDown = Time.time;
+		if (GvrControllerInput.AppButtonDown) {
+			timestampOfAppBtnDown = Time.time;			
+		}
 		if (GvrControllerInput.AppButtonUp) {
 			float timePassed = Time.time - timestampOfAppBtnDown;
-			return (timePassed >= lastingInSeconds) ? true : false;
+			return timePassed >= lastingInSeconds;
 		}
 		return false;
 	}
@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour {
 //		}
 		gameManager.SwitchToFailureState();
 	}
-		
+
 	public float GetDistance() {
 		return Vector3.Distance (transform.position, destination.position);
 	}
