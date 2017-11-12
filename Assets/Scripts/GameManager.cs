@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour {
 			canvasPlaying.SetActive (false);
 			canvasFailure.SetActive (true);
 			canvasSuccess.SetActive (false);
-			Debug.Log ("GetStateElapsed=" + GetStateElapsed() + ", maxLastingTimeAfterFailure=" + maxLastingTimeAfterFailure);
+//			Debug.Log ("GetStateElapsed=" + GetStateElapsed() + ", maxLastingTimeAfterFailure=" + maxLastingTimeAfterFailure);
 			if (GetStateElapsed () >= maxLastingTimeAfterFailure) {
 				SwitchToInitState ();
 			}
