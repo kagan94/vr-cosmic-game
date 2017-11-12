@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening.Plugins.Options;
-using NUnit.Framework;
-using UnityEditor;
+//using NUnit.Framework;
+//using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

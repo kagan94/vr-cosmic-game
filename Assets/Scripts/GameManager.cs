@@ -57,7 +57,8 @@ public class GameManager : MonoBehaviour {
 			canvasPlaying.SetActive (false);
 			canvasFailure.SetActive (true);
 			canvasSuccess.SetActive (false);
-			if (GetStateElapsed () > maxLastingTimeAfterFailure) {
+			Debug.Log ("GetStateElapsed=" + GetStateElapsed() + ", maxLastingTimeAfterFailure=" + maxLastingTimeAfterFailure);
+			if (GetStateElapsed () >= maxLastingTimeAfterFailure) {
 				SwitchToInitState ();
 			}
 			break;
@@ -101,7 +102,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void SwitchToInitState() {
-		SceneManager.LoadScene (GameManager.sceneName); //we need to reset the game for init state!
+		SceneManager.LoadScene (GameManager.sceneName);
 		timestampGameStart = Time.time;
 	}
 

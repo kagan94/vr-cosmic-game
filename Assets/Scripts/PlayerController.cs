@@ -51,17 +51,21 @@ public class PlayerController : MonoBehaviour {
 			gameManager.SwitchToInitState ();
 		}
 
-		if (oxygenVolumn < 25 && oxygenVolumn > 0) {
-			showAlarmScreen (oxygenAlarmScreen, 1f); //blink every 1 second
-		} else {
+		//show oxygen alarm screen
+		if (oxygenVolumn < 25 && oxygenVolumn > 0)
+			showAlarmScreen (oxygenAlarmScreen, 1f);
+		else
 			oxygenAlarmScreen.SetActive (false);
-		}
-		if (oxygenVolumn <= 0) {
+
+		//die for lacking of oxygen
+		if (oxygenVolumn <= 0)
 			gameManager.SwitchToFailureState ();
-		}
-		if (Vector3.Distance (departure.position, transform.position) < 35) {
+
+		//show fire alarm screen
+		if (Vector3.Distance (departure.position, transform.position) < 30)
 			showAlarmScreen(fireAlarmScreen, 1f);
-		}
+		else
+			fireAlarmScreen.SetActive (false);
 	}
 
 	private void showAlarmScreen(GameObject alarmScreenObject, float interval) {
