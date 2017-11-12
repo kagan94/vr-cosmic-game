@@ -119,7 +119,13 @@ public class PlayerController : MonoBehaviour {
 //		if (other.gameObject.CompareTag("Asteroid")) {
 //			deadScreen.SetActive(true);
 //		}
-		gameManager.SwitchToFailureState();
+		if (!other.gameObject.CompareTag ("Asteroid")) {
+
+			Debug.Log (">>>>>>>>>>>>>collision!>>>>>>>>>>>>>>>>>" + other.gameObject.tag + ", " + other.gameObject.name);
+			gameManager.SwitchToFailureState();	
+		}
+
+
 	}
 
 	public float GetDistance() {

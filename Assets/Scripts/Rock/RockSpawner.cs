@@ -109,7 +109,7 @@ public class RockSpawner : MonoBehaviour {
 
             GameObject newRock = Instantiate(rockPrefab, newRockPos, transform.rotation);
             Debug.Log("Scale: " + newRock.transform.localScale.x + " " + newRock.transform.localScale.y + " " + newRock.transform.localScale.z);
-            newRock.transform.localScale = new Vector3(Random.Range(5.0f, 50.0f), Random.Range(5.0f, 50.0f), Random.Range(5.0f, 50.0f));
+            newRock.transform.localScale = new Vector3(Random.Range(15.0f, 50.0f), Random.Range(15.0f, 50.0f), Random.Range(15.0f, 50.0f));
 
             Rigidbody newRockRb = newRock.GetComponent<Rigidbody>();
             newRock.GetComponent<RockSelfDestory>().SetInitialRockPos(newRockPos);
