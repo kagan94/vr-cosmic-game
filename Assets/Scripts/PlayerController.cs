@@ -13,19 +13,23 @@ public class PlayerController : MonoBehaviour {
 	public GameObject oxygenValue;
 	public GameObject oxygenAlarmScreen;
 	public GameObject fireAlarmScreen;
-	public float oxygenVolumn = 100;
+	public GameObject speedValue;
+	public GameObject positionX;
+	public GameObject positionY;
+	public GameObject positionZ;
+	public float oxygenVolumn = 100f;
 	
 	private GameManager gameManager;
 	private Rigidbody rb;
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 	private Quaternion initialCameraRotation;
-	private float speed = 0;
-	private float maxSpeed = 150f;
+	private float speed = 0f;
+	private Vector3 speedAccumulated = new Vector3(0, 0, 0);
+	public float speedNumber = 0f;
 	private float acceleration = 0.5f;
-	private float oxygenConsumingSpeedByAirInjection = 2f;
+	private float oxygenConsumingSpeedByAirInjection = 3f;
 	private float oxygenConsumingSpeedByBreath = 0.002f;
-	private float timestampOfAppBtnDown = 0.0f;
 	private float timestampOfClickBtnDown = 0.0f;
 	private float timeElapsed = 0f;
 
@@ -38,67 +42,39 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update() {
-		// Reset the scene
-		if (isAppBtnLongPressed(5)) {
-////			deadScreen.SetActive(false);
-//			transform.position = initialPosition;
-//			rb.velocity = Vector3.zero;
-//            
-//			float rotationResetSpeed = 50f * Time.deltaTime;
-//			 transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
-//			// transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, rotationResetSpeed);
-//			// Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, initialCameraRotation, rotationResetSpeed);
-			gameManager.SwitchToInitState ();
-		}
-
 		//show oxygen alarm screen
-		if (oxygenVolumn < 25 && oxygenVolumn > 0)
-			showAlarmScreen (oxygenAlarmScreen, 1f);
-		else
-			oxygenAlarmScreen.SetActive (false);
+		if (gameManager.IsPlayingState ()) {
+			if (oxygenVolumn < 25 && oxygenVolumn > 0)
+				showAlarmScreen (oxygenAlarmScreen, 1f);
+			else
+				oxygenAlarmScreen.SetActive (false);
 
-		//die for lacking of oxygen
-		if (oxygenVolumn <= 0)
-			gameManager.SwitchToFailureState ();
-
-		//show fire alarm screen
-		if (Vector3.Distance (departure.position, transform.position) < 30)
-			showAlarmScreen(fireAlarmScreen, 1f);
-		else
-			fireAlarmScreen.SetActive (false);
-	}
-
-	private void showAlarmScreen(GameObject alarmScreenObject, float interval) {
-		timeElapsed += Time.deltaTime;
-		if(timeElapsed > interval) {
-			if(alarmScreenObject.activeSelf) {
-				alarmScreenObject.SetActive (false);
-			} else {
-				alarmScreenObject.SetActive (true);
-			}
-			timeElapsed = 0f;
+			//show fire alarm screen
+			if (Vector3.Distance (departure.position, transform.position) < 30)
+				showAlarmScreen(fireAlarmScreen, 1f);
+			else
+				fireAlarmScreen.SetActive (false);
 		}
-	}
 
-	private bool isAppBtnLongPressed(float lastingInSeconds) {
-		if (GvrControllerInput.AppButtonDown) {
-			timestampOfAppBtnDown = Time.time;			
-		}
-		if (GvrControllerInput.AppButtonUp) {
-			float timePassed = Time.time - timestampOfAppBtnDown;
-			return timePassed >= lastingInSeconds;
-		}
-		return false;
+		speedNumber = speedAccumulated.magnitude / 20;
+		speedValue.GetComponent<Text> ().text = speedNumber.ToString("F2");
+		positionX.GetComponent<Text> ().text = transform.position.x.ToString("F2");
+		positionY.GetComponent<Text> ().text = transform.position.y.ToString("F2");
+		positionZ.GetComponent<Text> ().text = transform.position.z.ToString("F2");
 	}
 
 	private void FixedUpdate() {
+		
 		if (gameManager.IsPlayingState()) {
 			// Speed up by clicking on TouchPad
 			if (GvrControllerInput.ClickButton) {
 				speed += acceleration;
+
 				Vector3 targetPos = GvrControllerInput.Orientation * Vector3.forward;
 				Vector3 direction = targetPos;
 				rb.AddRelativeForce(direction.normalized * speed, ForceMode.Force);
+
+				speedAccumulated = direction.normalized * speed + speedAccumulated;
 			} else {
 				speed = 0;
 			}
@@ -120,15 +96,25 @@ public class PlayerController : MonoBehaviour {
 //			deadScreen.SetActive(true);
 //		}
 		if (!other.gameObject.CompareTag ("Asteroid")) {
-
 			Debug.Log (">>>>>>>>>>>>>collision!>>>>>>>>>>>>>>>>>" + other.gameObject.tag + ", " + other.gameObject.name);
 			gameManager.SwitchToFailureState();	
 		}
-
 
 	}
 
 	public float GetDistance() {
 		return Vector3.Distance (transform.position, destination.position);
+	}
+		
+	private void showAlarmScreen(GameObject alarmScreenObject, float interval) {
+		timeElapsed += Time.deltaTime;
+		if(timeElapsed > interval) {
+			if(alarmScreenObject.activeSelf) {
+				alarmScreenObject.SetActive (false);
+			} else {
+				alarmScreenObject.SetActive (true);
+			}
+			timeElapsed = 0f;
+		}
 	}
 }

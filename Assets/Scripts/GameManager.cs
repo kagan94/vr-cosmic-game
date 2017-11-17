@@ -22,56 +22,97 @@ public class GameManager : MonoBehaviour {
 	public enum GameState {InitState, PlayingState, FailureState, SuccessState};
 	public GameState currentState;
 
+	//audio resources
+	public GameObject landerObject;
+	private AudioSource landerSmokeAudio;
+	public GameObject backgroundMusicObject;
+	private AudioSource backgroundMusicAudio;
+	public GameObject breathMusicObject;
+	private AudioSource breathMusicAudio;
+
+
 	private PlayerController playerController;
 	private float lastStateChange = 0.0f;
 	private float maxLastingTimeAfterFailure = 5.0f;
 	private float successDistance = 5.0f;
 	private float timestampGameStart = 0.0f;
+	private float longpressTimeForReset = 3.5f;
+	private float timestampOfAppBtnDown = 0.0f;
+
+	private static float scoreTimeCost = 0f;
+	private static float scoreOxygenConsummed = 0f;
+	private static float highScore = 10000f;
 
 	void Start () {
 		playerController = (PlayerController) player.GetComponent(typeof(PlayerController));
 		SetState (GameState.InitState);
 		timestampGameStart = Time.time;
+		landerSmokeAudio = landerObject.GetComponent<AudioSource> ();
+		backgroundMusicAudio = backgroundMusicObject.GetComponent<AudioSource> ();
+		breathMusicAudio = breathMusicObject.GetComponent<AudioSource> ();
 	}
 
 	void Update () {
+		
+		//Reset the scene
+		if (isAppBtnLongPressed(longpressTimeForReset)) {
+			SwitchToInitState ();
+		}
+
+		//State switching for every state
 		switch (currentState) {
 		case GameState.InitState:
+			enableSounds (false);
 			canvasInit.SetActive (true);
 			canvasPlaying.SetActive (false);
 			canvasFailure.SetActive (false);
 			canvasSuccess.SetActive (false);
+
+			//formula for the high score, the smaller the better
+			if (scoreTimeCost * scoreOxygenConsummed < highScore) {
+				timeSpentValue.GetComponent<Text> ().text = scoreTimeCost.ToString ("F2");
+				oxygenConsummedValue.GetComponent<Text> ().text = scoreOxygenConsummed.ToString ("F2");
+			}
+
 			break;
 		case GameState.PlayingState:
+			enableSounds (true);
 			canvasInit.SetActive (false);
 			canvasPlaying.SetActive (true);
 			canvasFailure.SetActive (false);
 			canvasSuccess.SetActive (false);
-			if (playerController.GetDistance () < successDistance) {
+
+			if (playerController.GetDistance () < successDistance && playerController.speedNumber < 35) {
 				SwitchToSuccessState ();
 			}
-			distanceValue.GetComponent<Text> ().text = Convert.ToString (playerController.GetDistance ());
+			distanceValue.GetComponent<Text> ().text = playerController.GetDistance ().ToString ("F2");
+			//die for lacking of oxygen
+			if (playerController.oxygenVolumn <= 0) {
+				SwitchToFailureState ();
+			}
 			break;
 		case GameState.FailureState:
+			enableSounds(false);
 			canvasInit.SetActive (false);
 			canvasPlaying.SetActive (false);
 			canvasFailure.SetActive (true);
 			canvasSuccess.SetActive (false);
-//			Debug.Log ("GetStateElapsed=" + GetStateElapsed() + ", maxLastingTimeAfterFailure=" + maxLastingTimeAfterFailure);
 			if (GetStateElapsed () >= maxLastingTimeAfterFailure) {
 				SwitchToInitState ();
 			}
 			break;
 		case GameState.SuccessState:
+			enableSounds (false);
 			canvasInit.SetActive (false);
 			canvasPlaying.SetActive (false);
 			canvasFailure.SetActive (false);
 			canvasSuccess.SetActive (true);
 
 			//calculate the time cost
-			float timeCost = Time.time - timestampGameStart;
-			timeSpentValue.GetComponent<Text> ().text = Convert.ToString (timeCost);
-			oxygenConsummedValue.GetComponent<Text> ().text = Convert.ToString (100 - playerController.oxygenVolumn);
+
+
+			scoreTimeCost = Time.time - timestampGameStart;
+			scoreOxygenConsummed = 100 - playerController.oxygenVolumn;
 
 			//Pause the world! This is a trick to pause the world without actually pausing everything...
 			Time.timeScale = 0.01f;
@@ -82,6 +123,23 @@ public class GameManager : MonoBehaviour {
 			break;
 		}
 		// Debug.Log ("Current state: " + currentState);
+	}
+
+	private void enableSounds(bool enabled) {
+		landerSmokeAudio.enabled = enabled;
+		backgroundMusicAudio.enabled = enabled;
+		breathMusicAudio.enabled = enabled;
+	}
+
+	private bool isAppBtnLongPressed(float lastingInSeconds) {
+		if (GvrControllerInput.AppButtonDown) {
+			timestampOfAppBtnDown = Time.time;			
+		}
+		if (GvrControllerInput.AppButtonUp) {
+			float timePassed = Time.time - timestampOfAppBtnDown;
+			return timePassed >= lastingInSeconds;
+		}
+		return false;
 	}
 		
 	private void SetState(GameState state) {
