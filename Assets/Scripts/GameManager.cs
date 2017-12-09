@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour {
 	public GameObject canvasPlaying;
 	public GameObject canvasFailure;
 	public GameObject canvasSuccess;
-	public const String sceneName = "Demo";
 
 	public GameObject player;
 	public GameObject distanceValue;
@@ -42,14 +41,21 @@ public class GameManager : MonoBehaviour {
 	private static float scoreTimeCost = 0f;
 	private static float scoreOxygenConsummed = 0f;
 	private static float highScore = 10000f;
+	
+	private String sceneName;
 
 	void Start () {
 		playerController = (PlayerController) player.GetComponent(typeof(PlayerController));
+		
 		SetState (GameState.InitState);
+		
 		timestampGameStart = Time.time;
 		landerSmokeAudio = landerObject.GetComponent<AudioSource> ();
 		backgroundMusicAudio = backgroundMusicObject.GetComponent<AudioSource> ();
 		breathMusicAudio = breathMusicObject.GetComponent<AudioSource> ();
+		
+		Scene scene = SceneManager.GetActiveScene();
+		sceneName = scene.name;
 	}
 
 	void Update () {
@@ -160,7 +166,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void SwitchToInitState() {
-		SceneManager.LoadScene (GameManager.sceneName);
+		SceneManager.LoadScene (sceneName);
 		timestampGameStart = Time.time;
 	}
 

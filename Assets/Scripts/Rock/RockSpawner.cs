@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening.Plugins.Options;
-//using NUnit.Framework;
-//using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,11 +13,11 @@ public class RockSpawner : MonoBehaviour {
     public int maxDistance = 220;
 
     [Tooltip("Max Angle between initial and current player pos from Left side (if exceeded, new rock won't be generated)")]
-    [UnityEngine.Range(0, 180)]
+    [Range(0, 180)]
     public int maxLeftAngle = 30;
 
     [Tooltip("Max Angle between initial and current player pos from Right side (if exceeded, new rock won't be generated)")]
-    [UnityEngine.Range(0, 180)]
+    [Range(0, 180)]
     public int maxRightAngle = 30;
 
     public int generateEveryNSeconds = 1;
